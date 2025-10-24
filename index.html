@@ -474,8 +474,11 @@
                                 {% for app in apps %}
                                 {% set app_name_lower = app.name.lower() %}
                                 {% set app_desc_lower = (app.description["en"] or "").lower() %}
-                                {% set is_ios_app = 'ios' in app_name_lower or 'iphone' in app_name_lower or 'ipad' in app_name_lower or 'apple' in app_name_lower or 'ios' in app_desc_lower or 'iphone' in app_desc_lower or 'ipad' in app_desc_lower %}
-                                {% if is_ios_app %}
+                                {% set is_ios_specific = 'ios' in app_name_lower or 'iphone' in app_name_lower or 'ipad' in app_name_lower or 'app store' in app_desc_lower %}
+                                {% set popular_vpn_apps = ['openvpn', 'wireguard', 'v2ray', 'shadowsocks', 'clash', 'surge', 'quantumult', 'loon', 'stash', 'sing-box', 'nekobox', 'v2rayng', 'clashx', 'clash verge', 'clash meta', 'qv2ray', 'v2rayn', 'nekoray', 'hiddify', 'mihomo', 'v2fly', 'xray', 'trojan', 'ssr', 'ss', 'vmess', 'vless', 'hysteria', 'tuic', 'reality', 'naive', 'brook', 'gost', 'ehco', 'sing', 'mihomo', 'nekoray', 'nekobox', 'clash-verge', 'clash-meta', 'clashx', 'qv2ray', 'v2rayn', 'v2rayng', 'nekobox', 'nekoray', 'sing-box', 'mihomo', 'hiddify', 'stash', 'loon', 'quantumult', 'surge', 'clash', 'v2ray', 'shadowsocks', 'wireguard', 'openvpn'] %}
+                                {% set is_popular_vpn = app_name_lower in popular_vpn_apps %}
+                                {% set is_ios_compatible = is_ios_specific or is_popular_vpn or 'apple' in app_name_lower or 'ios' in app_desc_lower or 'iphone' in app_desc_lower or 'ipad' in app_desc_lower %}
+                                {% if is_ios_compatible %}
                                 <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
                                     <div class="flex items-start gap-4 mb-4">
                                         {% if app.icon_url %}
@@ -556,8 +559,11 @@
                                 {% for app in apps %}
                                 {% set app_name_lower = app.name.lower() %}
                                 {% set app_desc_lower = (app.description["en"] or "").lower() %}
-                                {% set is_windows_app = 'windows' in app_name_lower or 'win' in app_name_lower or 'pc' in app_name_lower or 'microsoft' in app_name_lower or 'windows' in app_desc_lower or 'win' in app_desc_lower or 'pc' in app_desc_lower %}
-                                {% if is_windows_app %}
+                                {% set is_windows_specific = 'windows' in app_name_lower or 'win' in app_name_lower or 'pc' in app_name_lower or 'microsoft' in app_name_lower %}
+                                {% set popular_vpn_apps = ['openvpn', 'wireguard', 'v2ray', 'shadowsocks', 'clash', 'surge', 'quantumult', 'loon', 'stash', 'sing-box', 'nekobox', 'v2rayng', 'clashx', 'clash verge', 'clash meta', 'qv2ray', 'v2rayn', 'nekoray', 'hiddify', 'mihomo', 'v2fly', 'xray', 'trojan', 'ssr', 'ss', 'vmess', 'vless', 'hysteria', 'tuic', 'reality', 'naive', 'brook', 'gost', 'ehco', 'sing', 'mihomo', 'nekoray', 'nekobox', 'clash-verge', 'clash-meta', 'clashx', 'qv2ray', 'v2rayn', 'v2rayng', 'nekobox', 'nekoray', 'sing-box', 'mihomo', 'hiddify', 'stash', 'loon', 'quantumult', 'surge', 'clash', 'v2ray', 'shadowsocks', 'wireguard', 'openvpn'] %}
+                                {% set is_popular_vpn = app_name_lower in popular_vpn_apps %}
+                                {% set is_windows_compatible = is_windows_specific or is_popular_vpn or 'windows' in app_desc_lower or 'win' in app_desc_lower or 'pc' in app_desc_lower or 'desktop' in app_desc_lower %}
+                                {% if is_windows_compatible %}
                                 <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
                                     <div class="flex items-start gap-4 mb-4">
                                         {% if app.icon_url %}
@@ -638,8 +644,11 @@
                                 {% for app in apps %}
                                 {% set app_name_lower = app.name.lower() %}
                                 {% set app_desc_lower = (app.description["en"] or "").lower() %}
-                                {% set is_android_app = 'android' in app_name_lower or 'google' in app_name_lower or 'play' in app_name_lower or 'android' in app_desc_lower or 'google' in app_desc_lower or 'play' in app_desc_lower %}
-                                {% if is_android_app %}
+                                {% set is_android_specific = 'android' in app_name_lower or 'google' in app_name_lower or 'play' in app_name_lower %}
+                                {% set popular_vpn_apps = ['openvpn', 'wireguard', 'v2ray', 'shadowsocks', 'clash', 'surge', 'quantumult', 'loon', 'stash', 'sing-box', 'nekobox', 'v2rayng', 'clashx', 'clash verge', 'clash meta', 'qv2ray', 'v2rayn', 'nekoray', 'hiddify', 'mihomo', 'v2fly', 'xray', 'trojan', 'ssr', 'ss', 'vmess', 'vless', 'hysteria', 'tuic', 'reality', 'naive', 'brook', 'gost', 'ehco', 'sing', 'mihomo', 'nekoray', 'nekobox', 'clash-verge', 'clash-meta', 'clashx', 'qv2ray', 'v2rayn', 'v2rayng', 'nekobox', 'nekoray', 'sing-box', 'mihomo', 'hiddify', 'stash', 'loon', 'quantumult', 'surge', 'clash', 'v2ray', 'shadowsocks', 'wireguard', 'openvpn'] %}
+                                {% set is_popular_vpn = app_name_lower in popular_vpn_apps %}
+                                {% set is_android_compatible = is_android_specific or is_popular_vpn or 'android' in app_desc_lower or 'google' in app_desc_lower or 'play' in app_desc_lower or 'mobile' in app_desc_lower %}
+                                {% if is_android_compatible %}
                                 <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
                                     <div class="flex items-start gap-4 mb-4">
                                         {% if app.icon_url %}
@@ -720,8 +729,11 @@
                                 {% for app in apps %}
                                 {% set app_name_lower = app.name.lower() %}
                                 {% set app_desc_lower = (app.description["en"] or "").lower() %}
-                                {% set is_macos_app = 'mac' in app_name_lower or 'macos' in app_name_lower or 'osx' in app_name_lower or 'apple' in app_name_lower or 'mac' in app_desc_lower or 'macos' in app_desc_lower or 'osx' in app_desc_lower %}
-                                {% if is_macos_app %}
+                                {% set is_macos_specific = 'mac' in app_name_lower or 'macos' in app_name_lower or 'osx' in app_name_lower %}
+                                {% set popular_vpn_apps = ['openvpn', 'wireguard', 'v2ray', 'shadowsocks', 'clash', 'surge', 'quantumult', 'loon', 'stash', 'sing-box', 'nekobox', 'v2rayng', 'clashx', 'clash verge', 'clash meta', 'qv2ray', 'v2rayn', 'nekoray', 'hiddify', 'mihomo', 'v2fly', 'xray', 'trojan', 'ssr', 'ss', 'vmess', 'vless', 'hysteria', 'tuic', 'reality', 'naive', 'brook', 'gost', 'ehco', 'sing', 'mihomo', 'nekoray', 'nekobox', 'clash-verge', 'clash-meta', 'clashx', 'qv2ray', 'v2rayn', 'v2rayng', 'nekobox', 'nekoray', 'sing-box', 'mihomo', 'hiddify', 'stash', 'loon', 'quantumult', 'surge', 'clash', 'v2ray', 'shadowsocks', 'wireguard', 'openvpn'] %}
+                                {% set is_popular_vpn = app_name_lower in popular_vpn_apps %}
+                                {% set is_macos_compatible = is_macos_specific or is_popular_vpn or 'mac' in app_desc_lower or 'macos' in app_desc_lower or 'osx' in app_desc_lower or 'macbook' in app_desc_lower or 'imac' in app_desc_lower %}
+                                {% if is_macos_compatible %}
                                 <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
                                     <div class="flex items-start gap-4 mb-4">
                                         {% if app.icon_url %}
@@ -802,8 +814,11 @@
                                 {% for app in apps %}
                                 {% set app_name_lower = app.name.lower() %}
                                 {% set app_desc_lower = (app.description["en"] or "").lower() %}
-                                {% set is_linux_app = 'linux' in app_name_lower or 'ubuntu' in app_name_lower or 'debian' in app_name_lower or 'fedora' in app_name_lower or 'arch' in app_name_lower or 'linux' in app_desc_lower or 'ubuntu' in app_desc_lower or 'debian' in app_desc_lower %}
-                                {% if is_linux_app %}
+                                {% set is_linux_specific = 'linux' in app_name_lower or 'ubuntu' in app_name_lower or 'debian' in app_name_lower or 'fedora' in app_name_lower or 'arch' in app_name_lower %}
+                                {% set popular_vpn_apps = ['openvpn', 'wireguard', 'v2ray', 'shadowsocks', 'clash', 'surge', 'quantumult', 'loon', 'stash', 'sing-box', 'nekobox', 'v2rayng', 'clashx', 'clash verge', 'clash meta', 'qv2ray', 'v2rayn', 'nekoray', 'hiddify', 'mihomo', 'v2fly', 'xray', 'trojan', 'ssr', 'ss', 'vmess', 'vless', 'hysteria', 'tuic', 'reality', 'naive', 'brook', 'gost', 'ehco', 'sing', 'mihomo', 'nekoray', 'nekobox', 'clash-verge', 'clash-meta', 'clashx', 'qv2ray', 'v2rayn', 'v2rayng', 'nekobox', 'nekoray', 'sing-box', 'mihomo', 'hiddify', 'stash', 'loon', 'quantumult', 'surge', 'clash', 'v2ray', 'shadowsocks', 'wireguard', 'openvpn'] %}
+                                {% set is_popular_vpn = app_name_lower in popular_vpn_apps %}
+                                {% set is_linux_compatible = is_linux_specific or is_popular_vpn or 'linux' in app_desc_lower or 'ubuntu' in app_desc_lower or 'debian' in app_desc_lower or 'open source' in app_desc_lower %}
+                                {% if is_linux_compatible %}
                                 <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
                                     <div class="flex items-start gap-4 mb-4">
                                         {% if app.icon_url %}
@@ -884,12 +899,13 @@
                                 {% for app in apps %}
                                 {% set app_name_lower = app.name.lower() %}
                                 {% set app_desc_lower = (app.description["en"] or "").lower() %}
-                                {% set is_ios_app = 'ios' in app_name_lower or 'iphone' in app_name_lower or 'ipad' in app_name_lower or 'apple' in app_name_lower or 'ios' in app_desc_lower or 'iphone' in app_desc_lower or 'ipad' in app_desc_lower %}
-                                {% set is_windows_app = 'windows' in app_name_lower or 'win' in app_name_lower or 'pc' in app_name_lower or 'microsoft' in app_name_lower or 'windows' in app_desc_lower or 'win' in app_desc_lower or 'pc' in app_desc_lower %}
-                                {% set is_android_app = 'android' in app_name_lower or 'google' in app_name_lower or 'play' in app_name_lower or 'android' in app_desc_lower or 'google' in app_desc_lower or 'play' in app_desc_lower %}
-                                {% set is_macos_app = 'mac' in app_name_lower or 'macos' in app_name_lower or 'osx' in app_name_lower or 'apple' in app_name_lower or 'mac' in app_desc_lower or 'macos' in app_desc_lower or 'osx' in app_desc_lower %}
-                                {% set is_linux_app = 'linux' in app_name_lower or 'ubuntu' in app_name_lower or 'debian' in app_name_lower or 'fedora' in app_name_lower or 'arch' in app_name_lower or 'linux' in app_desc_lower or 'ubuntu' in app_desc_lower or 'debian' in app_desc_lower %}
-                                {% if not (is_ios_app or is_windows_app or is_android_app or is_macos_app or is_linux_app) %}
+                                {% set is_ios_specific = 'ios' in app_name_lower or 'iphone' in app_name_lower or 'ipad' in app_name_lower or 'app store' in app_desc_lower %}
+                                {% set is_windows_specific = 'windows' in app_name_lower or 'win' in app_name_lower or 'pc' in app_name_lower or 'microsoft' in app_name_lower %}
+                                {% set is_android_specific = 'android' in app_name_lower or 'google' in app_name_lower or 'play' in app_name_lower %}
+                                {% set is_macos_specific = 'mac' in app_name_lower or 'macos' in app_name_lower or 'osx' in app_name_lower %}
+                                {% set is_linux_specific = 'linux' in app_name_lower or 'ubuntu' in app_name_lower or 'debian' in app_name_lower or 'fedora' in app_name_lower or 'arch' in app_name_lower %}
+                                {% set is_universal_only = not (is_ios_specific or is_windows_specific or is_android_specific or is_macos_specific or is_linux_specific) %}
+                                {% if is_universal_only %}
                                 <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
                                     <div class="flex items-start gap-4 mb-4">
                                         {% if app.icon_url %}
