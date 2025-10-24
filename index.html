@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.username }} - Subscription Information</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: bPasarGuardThemeorder-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scale-in {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+
+        .animate-gradient {
+            background-size: 200% 200%;
+            animation: gradient 3s ease infinite;
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.5s ease-out;
+        }
+
+        .animate-scale-in {
+            animation: scale-in 0.3s ease-out;
+        }
+
+        .animate-pulse-subtle {
+            animation: pulse-subtle 2s ease-in-out infinite;
+        }
+
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        .glass-effect {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        body.light {
+            background: #f9fafb;
+            color: #111827;
+        }
+
+        body.dark {
+            background: #020617;
+            color: #f8fafc;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 50;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.5rem;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        body.dark .theme-toggle {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+
+        body.light .theme-toggle {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        body.dark .card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+
+        body.light .card {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        body.dark .inner-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+
+        body.light .inner-card {
+            background: rgba(249, 250, 251, 0.5);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        body.dark .link-item {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+
+        body.light .link-item {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        body.dark .app-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+
+        body.light .app-card {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        body.dark .modal-content {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(51, 65, 85, 1);
+        }
+
+        body.light .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(229, 231, 235, 1);
+        }
+
+        body.dark .text-primary { color: #f8fafc; }
+        body.light .text-primary { color: #111827; }
+
+        body.dark .text-secondary { color: #94a3b8; }
+        body.light .text-secondary { color: #6b7280; }
+
+        body.dark .qr-bg { background: #1e293b; }
+        body.light .qr-bg { background: #f9fafb; }
+
+        .status-badge {
+            padding: 0.375rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: white;
+            display: inline-block;
+        }
+
+        .status-active { background: linear-gradient(to right, #34d399, #14b8a6); }
+        .status-limited { background: linear-gradient(to right, #fb7185, #ef4444); }
+        .status-expired { background: linear-gradient(to right, #fbbf24, #f97316); }
+        .status-disabled { background: linear-gradient(to right, #9ca3af, #64748b); }
+        .status-on_hold { background: linear-gradient(to right, #a78bfa, #8b5cf6); }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #3b82f6, #06b6d4);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(to right, #34d399, #14b8a6);
+            color: white;
+        }
+
+        .btn-violet {
+            background: linear-gradient(to right, #8b5cf6, #7c3aed);
+            color: white;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @media (max-width: 768px) {
+            .theme-toggle {
+                width: 2.5rem;
+                height: 2.5rem;
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Стили для аккордеонов */
+        .os-accordion {
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .accordion-header:hover {
+            transform: translateY(-2px);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            opacity: 0;
+        }
+
+        .accordion-content:not(.hidden) {
+            max-height: 2000px;
+            opacity: 1;
+        }
+
+        .accordion-arrow {
+            transition: transform 0.3s ease;
+        }
+
+        /* Анимация появления аккордеонов */
+        .os-accordion {
+            animation: slideInUp 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .os-accordion:nth-child(1) { animation-delay: 0.1s; }
+        .os-accordion:nth-child(2) { animation-delay: 0.2s; }
+        .os-accordion:nth-child(3) { animation-delay: 0.3s; }
+        .os-accordion:nth-child(4) { animation-delay: 0.4s; }
+        .os-accordion:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes slideInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Индикатор текущей ОС */
+        .current-os-indicator {
+            position: relative;
+        }
+
+        .current-os-indicator::before {
+            content: "✓";
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: linear-gradient(to right, #34d399, #14b8a6);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="dark">
+<canvas id="particles-canvas"></canvas>
+
+<div class="theme-toggle glass-effect" onclick="toggleTheme()" title="Toggle theme">
+    <span id="theme-icon">☀️</span>
+</div>
+
+<div class="content-wrapper min-h-screen px-4 py-8 md:py-12">
+    <div class="max-w-6xl mx-auto">
+        <div class="card glass-effect rounded-3xl p-6 md:p-10 shadow-2xl animate-fade-in">
+            <div class="text-center mb-8 md:mb-12">
+                <h1 class="text-3xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent animate-gradient">
+                    Subscription Information
+                </h1>
+                <p class="text-sm md:text-base text-secondary">
+                    Manage your account and access links
+                </p>
+            </div>
+
+            <div class="inner-card glass-effect rounded-2xl p-6 md:p-8 mb-8 hover:shadow-lg transition-all">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-secondary">Username</span>
+                        <span class="text-sm font-semibold text-primary">{{ user.username }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-secondary">Status</span>
+                        <span class="status-badge status-{{ user.status.value }} animate-pulse-subtle">
+                                {{ user.status.value }}
+                            </span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-secondary">Data Limit</span>
+                        <span class="text-sm font-semibold text-primary">
+                                {% if not user.data_limit %}∞{% else %}{{ user.data_limit | bytesformat }}{% endif %}
+                            </span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-secondary">Data Used</span>
+                        <span class="text-sm font-semibold text-primary">
+                                {{ user.used_traffic | bytesformat }}
+                                {% if user.data_limit_reset_strategy != 'no_reset' %}
+                                    (resets {{ user.data_limit_reset_strategy.value }})
+                                {% endif %}
+                            </span>
+                    </div>
+                    <div class="flex items-center justify-between md:col-span-2">
+                        {% if user.status.value == 'on_hold' %}
+                        <span class="text-sm font-medium text-secondary">On Hold Until</span>
+                        <span class="text-sm font-semibold text-primary">
+                                    {% if user.on_hold_timeout %}{{ user.on_hold_timeout | datetime }}{% else %}∞{% endif %}
+                                </span>
+                        {% else %}
+                        <span class="text-sm font-medium text-secondary">Expiration Date</span>
+                        <span class="text-sm font-semibold text-primary">
+                                    {% if not user.expire %}
+                                        ∞
+                                    {% else %}
+                                        {% set current_datetime = now() %}
+                                        {% set remaining_days = ((user.expire - current_datetime).days) %}
+                                        {{ user.expire | datetime }} ({{ remaining_days | int }} days)
+                                    {% endif %}
+                                </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if user.status in ('active','on_hold') %}
+            <div class="inner-card glass-effect rounded-2xl p-6 md:p-8 mb-8">
+                <h2 class="text-xl md:text-2xl font-bold mb-6 text-primary">
+                    Subscription Links
+                </h2>
+                <div class="space-y-3">
+                    {% for link in links %}
+                    <div class="link-item glass-effect flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-3 md:p-4 rounded-xl hover:shadow-md transition-all">
+                        <input
+                                type="text"
+                                value="{{ link }}"
+                                readonly
+                                class="flex-1 bg-transparent border-none outline-none font-mono text-xs md:text-sm px-2 text-primary"
+                        />
+                        <div class="flex gap-2">
+                            <button data-link="{{ link }}" data-index="{{ loop.index0 }}" class="btn btn-primary copy-btn-{{ loop.index0 }}" onclick="copyLink(this.dataset.link, this.dataset.index)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                                <span class="hidden sm:inline copy-text-{{ loop.index0 }}">Copy</span>
+                            </button>
+                            <button data-link="{{ link }}" class="btn btn-violet" onclick="showQR(this.dataset.link)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                </svg>
+                                <span class="hidden sm:inline">QR</span>
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button onclick="copyAllLinks()" class="btn btn-success w-full mt-4 py-3 md:py-4 rounded-xl shadow-xl" id="copyAllBtn">
+                    Copy All Links
+                </button>
+            </div>
+            {% endif %}
+
+            {% if apps %}
+            <div>
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center text-primary">
+                    Recommended Applications
+                </h2>
+                
+                <!-- Аккордеоны для разных операционных систем -->
+                <div id="os-accordions" class="space-y-4">
+                    <!-- iOS -->
+                    <div class="os-accordion" data-os="ios">
+                        <div class="accordion-header glass-effect rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all" onclick="toggleAccordion('ios')">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-primary">iOS</h3>
+                                        <p class="text-sm text-secondary">iPhone & iPad</p>
+                                    </div>
+                                </div>
+                                <svg class="accordion-arrow w-5 h-5 text-secondary transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="accordion-content hidden overflow-hidden transition-all duration-300">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4">
+                                {% for app in apps %}
+                                {% if 'ios' in app.name.lower() or 'iphone' in app.name.lower() or 'ipad' in app.name.lower() %}
+                                <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
+                                    <div class="flex items-start gap-4 mb-4">
+                                        {% if app.icon_url %}
+                                        <img src="{{ app.icon_url }}" alt="{{ app.name }}" class="w-12 h-12 md:w-16 md:h-16 rounded-xl object-cover border-2 border-blue-500/30">
+                                        {% endif %}
+                                        <div class="flex-1">
+                                            <h3 class="text-lg md:text-xl font-bold mb-1 text-primary">{{ app.name }}</h3>
+                                            {% if app.recommended %}
+                                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white">
+                                                ⭐ Recommended
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% if app.description["en"] %}
+                                    <p class="text-sm mb-4 leading-relaxed text-secondary">
+                                        {{ app.description["en"] }}
+                                    </p>
+                                    {% endif %}
+                                    {% if app.download_links %}
+                                    <div class="mb-4">
+                                        <h4 class="text-sm font-semibold mb-2 text-secondary">Download Links</h4>
+                                        <div class="space-y-2">
+                                            {% for link in app.download_links %}
+                                            {% if link.language.value == 'en' %}
+                                            <a href="{{ link.url }}" target="_blank" class="flex items-center gap-2 text-sm font-medium text-blue-500 hover:text-blue-400 transition-colors">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                                </svg>
+                                                {{ link.name }}
+                                            </a>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if app.import_url %}
+                                    <button data-url="{{ app.import_url }}" class="btn btn-primary w-full py-3 rounded-xl shadow-lg" onclick="window.open(this.dataset.url, '_blank')">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                        </svg>
+                                        Import Config
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Windows -->
+                    <div class="os-accordion" data-os="windows">
+                        <div class="accordion-header glass-effect rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all" onclick="toggleAccordion('windows')">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                                            <path d="M3 12V6.75l6-1.32v6.48L3 12zm17-9v8.75l-10 .15V5.21L20 3zM13 19.25v-6.48l6 1.33V12l-6 1.25zM3 13l6 1.25v6.48L3 20.25V13z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-primary">Windows</h3>
+                                        <p class="text-sm text-secondary">PC & Laptop</p>
+                                    </div>
+                                </div>
+                                <svg class="accordion-arrow w-5 h-5 text-secondary transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="accordion-content hidden overflow-hidden transition-all duration-300">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4">
+                                {% for app in apps %}
+                                {% if 'windows' in app.name.lower() or 'win' in app.name.lower() or 'pc' in app.name.lower() %}
+                                <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
+                                    <div class="flex items-start gap-4 mb-4">
+                                        {% if app.icon_url %}
+                                        <img src="{{ app.icon_url }}" alt="{{ app.name }}" class="w-12 h-12 md:w-16 md:h-16 rounded-xl object-cover border-2 border-blue-500/30">
+                                        {% endif %}
+                                        <div class="flex-1">
+                                            <h3 class="text-lg md:text-xl font-bold mb-1 text-primary">{{ app.name }}</h3>
+                                            {% if app.recommended %}
+                                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white">
+                                                ⭐ Recommended
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% if app.description["en"] %}
+                                    <p class="text-sm mb-4 leading-relaxed text-secondary">
+                                        {{ app.description["en"] }}
+                                    </p>
+                                    {% endif %}
+                                    {% if app.download_links %}
+                                    <div class="mb-4">
+                                        <h4 class="text-sm font-semibold mb-2 text-secondary">Download Links</h4>
+                                        <div class="space-y-2">
+                                            {% for link in app.download_links %}
+                                            {% if link.language.value == 'en' %}
+                                            <a href="{{ link.url }}" target="_blank" class="flex items-center gap-2 text-sm font-medium text-blue-500 hover:text-blue-400 transition-colors">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                                </svg>
+                                                {{ link.name }}
+                                            </a>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if app.import_url %}
+                                    <button data-url="{{ app.import_url }}" class="btn btn-primary w-full py-3 rounded-xl shadow-lg" onclick="window.open(this.dataset.url, '_blank')">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                        </svg>
+                                        Import Config
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Android -->
+                    <div class="os-accordion" data-os="android">
+                        <div class="accordion-header glass-effect rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all" onclick="toggleAccordion('android')">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                                            <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993.0001.5511-.4482.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5966.416.416 0 00-.5966.1521l-2.0223 3.503C15.5902 8.6589 13.8533 7.83 12 7.83s-3.5902.8289-5.1367 2.1087L4.841 6.4362a.416.416 0 00-.5966-.1521.416.416 0 00-.1521.5966l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-primary">Android</h3>
+                                        <p class="text-sm text-secondary">Smartphone & Tablet</p>
+                                    </div>
+                                </div>
+                                <svg class="accordion-arrow w-5 h-5 text-secondary transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="accordion-content hidden overflow-hidden transition-all duration-300">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4">
+                                {% for app in apps %}
+                                {% if 'android' in app.name.lower() or 'google' in app.name.lower() %}
+                                <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
+                                    <div class="flex items-start gap-4 mb-4">
+                                        {% if app.icon_url %}
+                                        <img src="{{ app.icon_url }}" alt="{{ app.name }}" class="w-12 h-12 md:w-16 md:h-16 rounded-xl object-cover border-2 border-blue-500/30">
+                                        {% endif %}
+                                        <div class="flex-1">
+                                            <h3 class="text-lg md:text-xl font-bold mb-1 text-primary">{{ app.name }}</h3>
+                                            {% if app.recommended %}
+                                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white">
+                                                ⭐ Recommended
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% if app.description["en"] %}
+                                    <p class="text-sm mb-4 leading-relaxed text-secondary">
+                                        {{ app.description["en"] }}
+                                    </p>
+                                    {% endif %}
+                                    {% if app.download_links %}
+                                    <div class="mb-4">
+                                        <h4 class="text-sm font-semibold mb-2 text-secondary">Download Links</h4>
+                                        <div class="space-y-2">
+                                            {% for link in app.download_links %}
+                                            {% if link.language.value == 'en' %}
+                                            <a href="{{ link.url }}" target="_blank" class="flex items-center gap-2 text-sm font-medium text-blue-500 hover:text-blue-400 transition-colors">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                                </svg>
+                                                {{ link.name }}
+                                            </a>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if app.import_url %}
+                                    <button data-url="{{ app.import_url }}" class="btn btn-primary w-full py-3 rounded-xl shadow-lg" onclick="window.open(this.dataset.url, '_blank')">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                        </svg>
+                                        Import Config
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- macOS -->
+                    <div class="os-accordion" data-os="macos">
+                        <div class="accordion-header glass-effect rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all" onclick="toggleAccordion('macos')">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                                            <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2.156-.172-3.589 1.26-4.513 1.26zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-primary">macOS</h3>
+                                        <p class="text-sm text-secondary">MacBook & iMac</p>
+                                    </div>
+                                </div>
+                                <svg class="accordion-arrow w-5 h-5 text-secondary transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="accordion-content hidden overflow-hidden transition-all duration-300">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4">
+                                {% for app in apps %}
+                                {% if 'mac' in app.name.lower() or 'macos' in app.name.lower() or 'osx' in app.name.lower() %}
+                                <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
+                                    <div class="flex items-start gap-4 mb-4">
+                                        {% if app.icon_url %}
+                                        <img src="{{ app.icon_url }}" alt="{{ app.name }}" class="w-12 h-12 md:w-16 md:h-16 rounded-xl object-cover border-2 border-blue-500/30">
+                                        {% endif %}
+                                        <div class="flex-1">
+                                            <h3 class="text-lg md:text-xl font-bold mb-1 text-primary">{{ app.name }}</h3>
+                                            {% if app.recommended %}
+                                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white">
+                                                ⭐ Recommended
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% if app.description["en"] %}
+                                    <p class="text-sm mb-4 leading-relaxed text-secondary">
+                                        {{ app.description["en"] }}
+                                    </p>
+                                    {% endif %}
+                                    {% if app.download_links %}
+                                    <div class="mb-4">
+                                        <h4 class="text-sm font-semibold mb-2 text-secondary">Download Links</h4>
+                                        <div class="space-y-2">
+                                            {% for link in app.download_links %}
+                                            {% if link.language.value == 'en' %}
+                                            <a href="{{ link.url }}" target="_blank" class="flex items-center gap-2 text-sm font-medium text-blue-500 hover:text-blue-400 transition-colors">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                                </svg>
+                                                {{ link.name }}
+                                            </a>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if app.import_url %}
+                                    <button data-url="{{ app.import_url }}" class="btn btn-primary w-full py-3 rounded-xl shadow-lg" onclick="window.open(this.dataset.url, '_blank')">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                        </svg>
+                                        Import Config
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Linux -->
+                    <div class="os-accordion" data-os="linux">
+                        <div class="accordion-header glass-effect rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all" onclick="toggleAccordion('linux')">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                                            <path d="M12.504 0c-.155 0-.31.01-.465.02L9.18 1.935c-.31.06-.62.13-.93.21L5.25 3.525c-.31.08-.62.17-.93.26L1.5 5.25c-.31.09-.62.18-.93.28v12.94c.31.1.62.19.93.28l2.82 1.465c.31.09.62.18.93.26l2.82 1.38c.31.08.62.15.93.21l2.859 1.915c.155.01.31.02.465.02s.31-.01.465-.02l2.859-1.915c.31-.06.62-.13.93-.21l2.82-1.38c.31-.08.62-.17.93-.26l2.82-1.465c.31-.09.62-.18.93-.28V5.53c-.31-.1-.62-.19-.93-.28l-2.82-1.465c-.31-.09-.62-.18-.93-.26l-2.82-1.38c-.31-.08-.62-.15-.93-.21L12.969.02C12.814.01 12.659 0 12.504 0zM12 2.25c.155 0 .31.01.465.02l2.859 1.915c.31.06.62.13.93.21l2.82 1.38c.31.08.62.17.93.26l2.82 1.465c.31.09.62.18.93.28v12.94c-.31.1-.62.19-.93.28l-2.82 1.465c-.31.09-.62.18-.93.26l-2.82 1.38c-.31.08-.62.15-.93.21l-2.859 1.915c-.155.01-.31.02-.465.02s-.31-.01-.465-.02l-2.859-1.915c-.31-.06-.62-.13-.93-.21l-2.82-1.38c-.31-.08-.62-.17-.93-.26l-2.82-1.465c-.31-.09-.62-.18-.93-.28V5.53c.31-.1.62-.19.93-.28l2.82-1.465c.31-.09.62-.18.93-.26l2.82-1.38c.31-.08.62-.15.93-.21L11.535 2.27c.155-.01.31-.02.465-.02z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-primary">Linux</h3>
+                                        <p class="text-sm text-secondary">Ubuntu, Debian & Others</p>
+                                    </div>
+                                </div>
+                                <svg class="accordion-arrow w-5 h-5 text-secondary transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="accordion-content hidden overflow-hidden transition-all duration-300">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4">
+                                {% for app in apps %}
+                                {% if 'linux' in app.name.lower() or 'ubuntu' in app.name.lower() or 'debian' in app.name.lower() %}
+                                <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
+                                    <div class="flex items-start gap-4 mb-4">
+                                        {% if app.icon_url %}
+                                        <img src="{{ app.icon_url }}" alt="{{ app.name }}" class="w-12 h-12 md:w-16 md:h-16 rounded-xl object-cover border-2 border-blue-500/30">
+                                        {% endif %}
+                                        <div class="flex-1">
+                                            <h3 class="text-lg md:text-xl font-bold mb-1 text-primary">{{ app.name }}</h3>
+                                            {% if app.recommended %}
+                                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white">
+                                                ⭐ Recommended
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% if app.description["en"] %}
+                                    <p class="text-sm mb-4 leading-relaxed text-secondary">
+                                        {{ app.description["en"] }}
+                                    </p>
+                                    {% endif %}
+                                    {% if app.download_links %}
+                                    <div class="mb-4">
+                                        <h4 class="text-sm font-semibold mb-2 text-secondary">Download Links</h4>
+                                        <div class="space-y-2">
+                                            {% for link in app.download_links %}
+                                            {% if link.language.value == 'en' %}
+                                            <a href="{{ link.url }}" target="_blank" class="flex items-center gap-2 text-sm font-medium text-blue-500 hover:text-blue-400 transition-colors">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                                </svg>
+                                                {{ link.name }}
+                                            </a>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if app.import_url %}
+                                    <button data-url="{{ app.import_url }}" class="btn btn-primary w-full py-3 rounded-xl shadow-lg" onclick="window.open(this.dataset.url, '_blank')">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                        </svg>
+                                        Import Config
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay animate-fade-in" id="qrModal" onclick="closeQR(event)">
+    <div class="modal-content glass-effect rounded-2xl p-8 max-w-sm w-full shadow-2xl animate-scale-in" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-primary">Scan QR Code</h3>
+            <button onclick="closeQR()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-all">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="flex justify-center">
+            <div id="qrCodeContainer" class="qr-bg p-4 rounded-xl"></div>
+        </div>
+        <p class="text-sm text-center mt-6 text-secondary">
+            Scan this code with your VPN app
+        </p>
+    </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  const particleCount = 80;
+
+  function initCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 3 + 1;
+      this.speedX = Math.random() * 0.5 - 0.25;
+      this.speedY = Math.random() * 0.5 - 0.25;
+      this.opacity = Math.random() * 0.5 + 0.2;
+    }
+
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+
+      if (this.x > canvas.width) this.x = 0;
+      if (this.x < 0) this.x = canvas.width;
+      if (this.y > canvas.height) this.y = 0;
+      if (this.y < 0) this.y = canvas.height;
+    }
+
+    draw() {
+      const isDark = document.body.classList.contains('dark');
+      ctx.fillStyle = isDark
+        ? `rgba(100, 149, 237, ${this.opacity})`
+        : `rgba(59, 130, 246, ${this.opacity})`;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function initParticles() {
+    particles = [];
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach(particle => {
+      particle.update();
+      particle.draw();
+    });
+
+    const isDark = document.body.classList.contains('dark');
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < 150) {
+          ctx.strokeStyle = isDark
+            ? `rgba(100, 149, 237, ${0.15 * (1 - distance / 150)})`
+            : `rgba(59, 130, 246, ${0.1 * (1 - distance / 150)})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  initCanvas();
+  initParticles();
+  animate();
+
+  window.addEventListener('resize', () => {
+    initCanvas();
+  });
+
+  function toggleTheme() {
+    const body = document.body;
+    const themeIcon = document.getElementById('theme-icon');
+
+    if (body.classList.contains('dark')) {
+      body.classList.remove('dark');
+      body.classList.add('light');
+      themeIcon.textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    } else {
+      body.classList.remove('light');
+      body.classList.add('dark');
+      themeIcon.textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedTheme === 'light') {
+      document.body.classList.remove('dark');
+      document.body.classList.add('light');
+      document.getElementById('theme-icon').textContent = '🌙';
+    } else {
+      document.body.classList.add('dark');
+      document.getElementById('theme-icon').textContent = '☀️';
+    }
+  });
+
+  function copyLink(link, index) {
+    const tempInput = document.createElement('input');
+    tempInput.value = link;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+
+    const btn = document.querySelector(`.copy-btn-${index}`);
+    const text = document.querySelector(`.copy-text-${index}`);
+    const originalHTML = btn.innerHTML;
+
+    btn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="hidden sm:inline">Copied!</span>
+            `;
+    btn.style.background = 'linear-gradient(to right, #34d399, #14b8a6)';
+
+    setTimeout(() => {
+      btn.innerHTML = originalHTML;
+      btn.style.background = 'linear-gradient(to right, #3b82f6, #06b6d4)';
+    }, 2000);
+  }
+
+  function copyAllLinks() {
+    const links = Array.from(document.querySelectorAll('.link-item input')).map(input => input.value);
+    const allLinks = links.join('\n');
+
+    const tempInput = document.createElement('textarea');
+    tempInput.value = allLinks;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+
+    const btn = document.getElementById('copyAllBtn');
+    btn.textContent = '✓ All Links Copied!';
+    btn.style.background = 'linear-gradient(to right, #34d399, #14b8a6)';
+
+    setTimeout(() => {
+      btn.textContent = 'Copy All Links';
+      btn.style.background = 'linear-gradient(to right, #34d399, #14b8a6)';
+    }, 2000);
+  }
+
+  function showQR(link) {
+    const modal = document.getElementById('qrModal');
+    const container = document.getElementById('qrCodeContainer');
+
+    container.innerHTML = '';
+
+    new QRCode(container, {
+      text: link,
+      width: 256,
+      height: 256,
+      colorDark: document.body.classList.contains('dark') ? '#ffffff' : '#000000',
+      colorLight: document.body.classList.contains('dark') ? '#1e293b' : '#ffffff',
+      correctLevel: QRCode.CorrectLevel.L
+    });
+
+    modal.classList.add('active');
+  }
+
+  function closeQR(event) {
+    const modal = document.getElementById('qrModal');
+    modal.classList.remove('active');
+  }
+
+  // Функция определения операционной системы
+  function detectOS() {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    
+    // iOS detection
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+      return 'ios';
+    }
+    
+    // Android detection
+    if (/android/i.test(userAgent)) {
+      return 'android';
+    }
+    
+    // Windows detection
+    if (/windows/i.test(userAgent)) {
+      return 'windows';
+    }
+    
+    // macOS detection
+    if (/macintosh|mac os x/i.test(userAgent)) {
+      return 'macos';
+    }
+    
+    // Linux detection
+    if (/linux/i.test(userAgent)) {
+      return 'linux';
+    }
+    
+    // Default fallback
+    return 'windows';
+  }
+
+  // Функция сортировки аккордеонов по приоритету ОС
+  function sortAccordionsByOS() {
+    const currentOS = detectOS();
+    const accordionsContainer = document.getElementById('os-accordions');
+    const accordions = Array.from(accordionsContainer.children);
+    
+    // Порядок приоритета: текущая ОС первая, остальные по алфавиту
+    const osOrder = ['ios', 'android', 'windows', 'macos', 'linux'];
+    const currentOSIndex = osOrder.indexOf(currentOS);
+    
+    // Перемещаем текущую ОС в начало
+    const sortedOrder = [currentOS];
+    osOrder.forEach(os => {
+      if (os !== currentOS) {
+        sortedOrder.push(os);
+      }
+    });
+    
+    // Сортируем аккордеоны согласно новому порядку
+    sortedOrder.forEach(os => {
+      const accordion = accordions.find(acc => acc.dataset.os === os);
+      if (accordion) {
+        accordionsContainer.appendChild(accordion);
+      }
+    });
+  }
+
+  // Функция переключения аккордеона
+  function toggleAccordion(os) {
+    const accordion = document.querySelector(`[data-os="${os}"]`);
+    const content = accordion.querySelector('.accordion-content');
+    const arrow = accordion.querySelector('.accordion-arrow');
+    
+    if (content.classList.contains('hidden')) {
+      // Закрываем все другие аккордеоны
+      document.querySelectorAll('.accordion-content').forEach(acc => {
+        acc.classList.add('hidden');
+      });
+      document.querySelectorAll('.accordion-arrow').forEach(arr => {
+        arr.style.transform = 'rotate(0deg)';
+      });
+      
+      // Открываем текущий
+      content.classList.remove('hidden');
+      arrow.style.transform = 'rotate(180deg)';
+    } else {
+      // Закрываем текущий
+      content.classList.add('hidden');
+      arrow.style.transform = 'rotate(0deg)';
+    }
+  }
+
+  // Функция автоматического раскрытия аккордеона для текущей ОС
+  function autoExpandCurrentOS() {
+    const currentOS = detectOS();
+    const accordion = document.querySelector(`[data-os="${currentOS}"]`);
+    
+    if (accordion) {
+      const content = accordion.querySelector('.accordion-content');
+      const arrow = accordion.querySelector('.accordion-arrow');
+      const header = accordion.querySelector('.accordion-header');
+      
+      // Раскрываем аккордеон для текущей ОС
+      content.classList.remove('hidden');
+      arrow.style.transform = 'rotate(180deg)';
+      
+      // Добавляем визуальную индикацию текущей ОС
+      header.style.border = '2px solid #3b82f6';
+      header.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.3)';
+      
+      // Добавляем класс для индикатора
+      header.classList.add('current-os-indicator');
+      
+      // Добавляем текст "Текущая ОС"
+      const titleElement = header.querySelector('h3');
+      if (titleElement && !titleElement.textContent.includes('(Текущая ОС)')) {
+        titleElement.textContent += ' (Текущая ОС)';
+      }
+    }
+  }
+
+  // Инициализация при загрузке страницы
+  document.addEventListener('DOMContentLoaded', function() {
+    // Ждем немного, чтобы аккордеоны успели отрендериться
+    setTimeout(() => {
+      sortAccordionsByOS();
+      autoExpandCurrentOS();
+    }, 100);
+  });
+</script>
+</body>
+</html>
