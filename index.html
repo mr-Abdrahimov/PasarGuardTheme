@@ -461,6 +461,7 @@
                                     <div>
                                         <h3 class="text-lg font-bold text-primary">iOS</h3>
                                         <p class="text-sm text-secondary">iPhone & iPad</p>
+                                        <span class="text-xs text-blue-400 font-medium" id="ios-count">0 apps</span>
                                     </div>
                                 </div>
                                 <svg class="accordion-arrow w-5 h-5 text-secondary transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -471,7 +472,10 @@
                         <div class="accordion-content hidden overflow-hidden transition-all duration-300">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4">
                                 {% for app in apps %}
-                                {% if 'ios' in app.name.lower() or 'iphone' in app.name.lower() or 'ipad' in app.name.lower() %}
+                                {% set app_name_lower = app.name.lower() %}
+                                {% set app_desc_lower = (app.description["en"] or "").lower() %}
+                                {% set is_ios_app = 'ios' in app_name_lower or 'iphone' in app_name_lower or 'ipad' in app_name_lower or 'apple' in app_name_lower or 'ios' in app_desc_lower or 'iphone' in app_desc_lower or 'ipad' in app_desc_lower %}
+                                {% if is_ios_app %}
                                 <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
                                     <div class="flex items-start gap-4 mb-4">
                                         {% if app.icon_url %}
@@ -539,6 +543,7 @@
                                     <div>
                                         <h3 class="text-lg font-bold text-primary">Windows</h3>
                                         <p class="text-sm text-secondary">PC & Laptop</p>
+                                        <span class="text-xs text-blue-400 font-medium" id="windows-count">0 apps</span>
                                     </div>
                                 </div>
                                 <svg class="accordion-arrow w-5 h-5 text-secondary transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -549,7 +554,10 @@
                         <div class="accordion-content hidden overflow-hidden transition-all duration-300">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4">
                                 {% for app in apps %}
-                                {% if 'windows' in app.name.lower() or 'win' in app.name.lower() or 'pc' in app.name.lower() %}
+                                {% set app_name_lower = app.name.lower() %}
+                                {% set app_desc_lower = (app.description["en"] or "").lower() %}
+                                {% set is_windows_app = 'windows' in app_name_lower or 'win' in app_name_lower or 'pc' in app_name_lower or 'microsoft' in app_name_lower or 'windows' in app_desc_lower or 'win' in app_desc_lower or 'pc' in app_desc_lower %}
+                                {% if is_windows_app %}
                                 <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
                                     <div class="flex items-start gap-4 mb-4">
                                         {% if app.icon_url %}
@@ -617,6 +625,7 @@
                                     <div>
                                         <h3 class="text-lg font-bold text-primary">Android</h3>
                                         <p class="text-sm text-secondary">Smartphone & Tablet</p>
+                                        <span class="text-xs text-blue-400 font-medium" id="android-count">0 apps</span>
                                     </div>
                                 </div>
                                 <svg class="accordion-arrow w-5 h-5 text-secondary transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -627,7 +636,10 @@
                         <div class="accordion-content hidden overflow-hidden transition-all duration-300">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4">
                                 {% for app in apps %}
-                                {% if 'android' in app.name.lower() or 'google' in app.name.lower() %}
+                                {% set app_name_lower = app.name.lower() %}
+                                {% set app_desc_lower = (app.description["en"] or "").lower() %}
+                                {% set is_android_app = 'android' in app_name_lower or 'google' in app_name_lower or 'play' in app_name_lower or 'android' in app_desc_lower or 'google' in app_desc_lower or 'play' in app_desc_lower %}
+                                {% if is_android_app %}
                                 <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
                                     <div class="flex items-start gap-4 mb-4">
                                         {% if app.icon_url %}
@@ -695,6 +707,7 @@
                                     <div>
                                         <h3 class="text-lg font-bold text-primary">macOS</h3>
                                         <p class="text-sm text-secondary">MacBook & iMac</p>
+                                        <span class="text-xs text-blue-400 font-medium" id="macos-count">0 apps</span>
                                     </div>
                                 </div>
                                 <svg class="accordion-arrow w-5 h-5 text-secondary transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -705,7 +718,10 @@
                         <div class="accordion-content hidden overflow-hidden transition-all duration-300">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4">
                                 {% for app in apps %}
-                                {% if 'mac' in app.name.lower() or 'macos' in app.name.lower() or 'osx' in app.name.lower() %}
+                                {% set app_name_lower = app.name.lower() %}
+                                {% set app_desc_lower = (app.description["en"] or "").lower() %}
+                                {% set is_macos_app = 'mac' in app_name_lower or 'macos' in app_name_lower or 'osx' in app_name_lower or 'apple' in app_name_lower or 'mac' in app_desc_lower or 'macos' in app_desc_lower or 'osx' in app_desc_lower %}
+                                {% if is_macos_app %}
                                 <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
                                     <div class="flex items-start gap-4 mb-4">
                                         {% if app.icon_url %}
@@ -773,6 +789,7 @@
                                     <div>
                                         <h3 class="text-lg font-bold text-primary">Linux</h3>
                                         <p class="text-sm text-secondary">Ubuntu, Debian & Others</p>
+                                        <span class="text-xs text-blue-400 font-medium" id="linux-count">0 apps</span>
                                     </div>
                                 </div>
                                 <svg class="accordion-arrow w-5 h-5 text-secondary transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -783,7 +800,96 @@
                         <div class="accordion-content hidden overflow-hidden transition-all duration-300">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4">
                                 {% for app in apps %}
-                                {% if 'linux' in app.name.lower() or 'ubuntu' in app.name.lower() or 'debian' in app.name.lower() %}
+                                {% set app_name_lower = app.name.lower() %}
+                                {% set app_desc_lower = (app.description["en"] or "").lower() %}
+                                {% set is_linux_app = 'linux' in app_name_lower or 'ubuntu' in app_name_lower or 'debian' in app_name_lower or 'fedora' in app_name_lower or 'arch' in app_name_lower or 'linux' in app_desc_lower or 'ubuntu' in app_desc_lower or 'debian' in app_desc_lower %}
+                                {% if is_linux_app %}
+                                <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
+                                    <div class="flex items-start gap-4 mb-4">
+                                        {% if app.icon_url %}
+                                        <img src="{{ app.icon_url }}" alt="{{ app.name }}" class="w-12 h-12 md:w-16 md:h-16 rounded-xl object-cover border-2 border-blue-500/30">
+                                        {% endif %}
+                                        <div class="flex-1">
+                                            <h3 class="text-lg md:text-xl font-bold mb-1 text-primary">{{ app.name }}</h3>
+                                            {% if app.recommended %}
+                                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white">
+                                                ⭐ Recommended
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% if app.description["en"] %}
+                                    <p class="text-sm mb-4 leading-relaxed text-secondary">
+                                        {{ app.description["en"] }}
+                                    </p>
+                                    {% endif %}
+                                    {% if app.download_links %}
+                                    <div class="mb-4">
+                                        <h4 class="text-sm font-semibold mb-2 text-secondary">Download Links</h4>
+                                        <div class="space-y-2">
+                                            {% for link in app.download_links %}
+                                            {% if link.language.value == 'en' %}
+                                            <a href="{{ link.url }}" target="_blank" class="flex items-center gap-2 text-sm font-medium text-blue-500 hover:text-blue-400 transition-colors">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                                </svg>
+                                                {{ link.name }}
+                                            </a>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if app.import_url %}
+                                    <button data-url="{{ app.import_url }}" class="btn btn-primary w-full py-3 rounded-xl shadow-lg" onclick="window.open(this.dataset.url, '_blank')">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                        </svg>
+                                        Import Config
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Универсальные приложения -->
+                    <div class="os-accordion" data-os="universal">
+                        <div class="accordion-header glass-effect rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all" onclick="toggleAccordion('universal')">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-primary">Universal</h3>
+                                        <p class="text-sm text-secondary">Cross-platform Apps</p>
+                                        <span class="text-xs text-blue-400 font-medium" id="universal-count">0 apps</span>
+                                    </div>
+                                </div>
+                                <svg class="accordion-arrow w-5 h-5 text-secondary transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="accordion-content hidden overflow-hidden transition-all duration-300">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 p-4">
+                                {% for app in apps %}
+                                {% set app_name_lower = app.name.lower() %}
+                                {% set app_desc_lower = (app.description["en"] or "").lower() %}
+                                {% set is_ios_app = 'ios' in app_name_lower or 'iphone' in app_name_lower or 'ipad' in app_name_lower or 'apple' in app_name_lower or 'ios' in app_desc_lower or 'iphone' in app_desc_lower or 'ipad' in app_desc_lower %}
+                                {% set is_windows_app = 'windows' in app_name_lower or 'win' in app_name_lower or 'pc' in app_name_lower or 'microsoft' in app_name_lower or 'windows' in app_desc_lower or 'win' in app_desc_lower or 'pc' in app_desc_lower %}
+                                {% set is_android_app = 'android' in app_name_lower or 'google' in app_name_lower or 'play' in app_name_lower or 'android' in app_desc_lower or 'google' in app_desc_lower or 'play' in app_desc_lower %}
+                                {% set is_macos_app = 'mac' in app_name_lower or 'macos' in app_name_lower or 'osx' in app_name_lower or 'apple' in app_name_lower or 'mac' in app_desc_lower or 'macos' in app_desc_lower or 'osx' in app_desc_lower %}
+                                {% set is_linux_app = 'linux' in app_name_lower or 'ubuntu' in app_name_lower or 'debian' in app_name_lower or 'fedora' in app_name_lower or 'arch' in app_name_lower or 'linux' in app_desc_lower or 'ubuntu' in app_desc_lower or 'debian' in app_desc_lower %}
+                                {% if not (is_ios_app or is_windows_app or is_android_app or is_macos_app or is_linux_app) %}
                                 <div class="app-card glass-effect rounded-2xl p-6 hover:scale-[1.02] hover:shadow-xl transition-all">
                                     <div class="flex items-start gap-4 mb-4">
                                         {% if app.icon_url %}
@@ -1091,9 +1197,8 @@
     const accordionsContainer = document.getElementById('os-accordions');
     const accordions = Array.from(accordionsContainer.children);
     
-    // Порядок приоритета: текущая ОС первая, остальные по алфавиту
-    const osOrder = ['ios', 'android', 'windows', 'macos', 'linux'];
-    const currentOSIndex = osOrder.indexOf(currentOS);
+    // Порядок приоритета: текущая ОС первая, остальные по алфавиту, универсальные в конце
+    const osOrder = ['ios', 'android', 'windows', 'macos', 'linux', 'universal'];
     
     // Перемещаем текущую ОС в начало
     const sortedOrder = [currentOS];
@@ -1166,12 +1271,37 @@
     }
   }
 
+  // Функция подсчета приложений в каждом аккордеоне
+  function updateAppCounts() {
+    const osTypes = ['ios', 'windows', 'android', 'macos', 'linux', 'universal'];
+    
+    osTypes.forEach(os => {
+      const accordion = document.querySelector(`[data-os="${os}"]`);
+      if (accordion) {
+        const appCards = accordion.querySelectorAll('.app-card');
+        const countElement = document.getElementById(`${os}-count`);
+        if (countElement) {
+          const count = appCards.length;
+          countElement.textContent = `${count} app${count !== 1 ? 's' : ''}`;
+          
+          // Скрываем счетчик если приложений нет
+          if (count === 0) {
+            countElement.style.display = 'none';
+          } else {
+            countElement.style.display = 'block';
+          }
+        }
+      }
+    });
+  }
+
   // Инициализация при загрузке страницы
   document.addEventListener('DOMContentLoaded', function() {
     // Ждем немного, чтобы аккордеоны успели отрендериться
     setTimeout(() => {
       sortAccordionsByOS();
       autoExpandCurrentOS();
+      updateAppCounts();
     }, 100);
   });
 </script>
